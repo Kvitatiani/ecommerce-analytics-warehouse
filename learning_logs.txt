@@ -1,0 +1,82 @@
+Week 1 start - 04/04/2026
+
+=== DOCKER ===
+
+docker-compose up -d                Start database (detached)
+docker-compose down                 Stop database (data kept in volume)
+docker-compose down -v              Stop + delete all data
+docker ps                           See running containers
+docker logs ecommerce_warehouse_db  See PostgreSQL logs
+
+docker exec -it ecommerce_warehouse_db psql -U warehouse_user -d ecommerce_warehouse
+  ^ connects to psql inside the container
+  -it = interactive terminal, -U = user, -d = database
+
+=== PSQL SHORTCUTS ===
+
+\dn           List schemas
+\dt bronze.*  List tables in bronze schema
+\d tablename  Show table columns and types
+q             Exit the pager when output shows (END)
+
+=== SQL — DDL ===
+
+CREATE SCHEMA IF NOT EXISTS bronze;
+  ^ IF NOT EXISTS = idempotent (safe to run multiple times)
+
+CREATE TABLE IF NOT EXISTS bronze.products_raw (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    products_payload JSONB,
+    ingestion_timestamp TIMESTAMP DEFAULT NOW(),
+    source TEXT,
+    batch_id TEXT
+);
+  ^ GENERATED ALWAYS AS IDENTITY = modern auto-increment (replaces SERIAL)
+  ^ DEFAULT NOW() = auto-fills timestamp if not provided
+  ^ JSONB = binary JSON, faster queries, supports indexing
+
+TRUNCATE bronze.categories_raw;   -- fast delete, resets IDs
+DELETE FROM bronze.categories_raw; -- slower, doesn't reset IDs
+
+=== JSONB QUERYING ===
+
+SELECT payload->>'title' FROM bronze.products_raw;   -- extracts as TEXT
+SELECT payload->'category' FROM bronze.products_raw;  -- keeps as JSON object
+
+=== PYTHON — DB CONNECTION ===
+
+load_dotenv() reads .env file, then os.getenv("KEY") accesses values
+psycopg2.connect(host, port, dbname, user, password) returns connection
+  ^ note: parameter is "dbname" not "database"
+
+=== PYTHON — API CLIENT ===
+
+response = requests.get(url, timeout=10)
+response.raise_for_status()  -- throws HTTPError if not 200
+data = response.json()       -- parses JSON into python list/dict
+
+=== PYTHON — BRONZE LOADER ===
+
+Key pattern for inserting JSONB:
+  from psycopg2.extras import Json
+  cursor.execute(
+      "INSERT INTO table (payload, source, batch_id) VALUES (%s, %s, %s)",
+      (Json(row), source_name, batch_id)
+  )
+  ^ Json() wraps python dict for JSONB column
+  ^ %s placeholders prevent SQL injection (never use f-strings for values)
+  ^ connection.commit() required or data is lost
+
+=== PYTHON — PACKAGES ===
+
+__init__.py needed in every folder in the import chain:
+  src/__init__.py → src/ingestion/__init__.py → api_client.py
+Run as module from project root: python -m src.ingestion.bronze_loader
+
+=== CONCEPTS LEARNED ===
+
+- Bronze layer = raw, untouched API data as JSONB. Append-only, never update/delete.
+- Idempotency = safe to run multiple times, same result (IF NOT EXISTS, UPSERT)
+- Batch ID = shared timestamp across all rows in one pipeline run
+- ingestion_log = tracks every run (success/failure, record count, errors)
+- .env for credentials, .env.example committed as template, .env in .gitignore
