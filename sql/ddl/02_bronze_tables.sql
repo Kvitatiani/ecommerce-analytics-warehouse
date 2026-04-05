@@ -12,9 +12,9 @@ CREATE TABLE IF NOT EXISTS bronze.categories_raw (
     source TEXT,
     batch_id TEXT);
 
-CREATE TABLE IF NOT EXISTS bronze.user_raw (
+CREATE TABLE IF NOT EXISTS bronze.users_raw (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_payload JSONB,
+    users_payload JSONB,
     ingestion_timestamp TIMESTAMP DEFAULT NOW(),
     source TEXT,
     batch_id TEXT);

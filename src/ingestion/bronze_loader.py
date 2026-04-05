@@ -3,18 +3,21 @@ from src.utils.db_connection import get_db_connection
 from psycopg2.extras import Json
 from datetime import datetime
 
-table_name = "bronze.categories_raw"
 source = "platzi_api"
-api_category = "categories"
-data_json = get_api_data(api_category)
-payload_column = f"{api_category}_payload"
+
+table_config = [
+    {"table_name": "bronze.categories_raw", "endpoint": "categories", "payload_column": "categories_payload"},
+    {"table_name": "bronze.products_raw", "endpoint": "products", "payload_column": "products_payload"},
+    {"table_name": "bronze.users_raw", "endpoint": "users", "payload_column": "users_payload"},
+]
 
 def insert_data_to_bronze(api_data,table_name,payload_column_name,source_name):
     try: 
         batch_id = datetime.now().isoformat()
         connection = get_db_connection()
         cursor = connection.cursor()
-        
+        cursor.execute(f"TRUNCATE {table_name}")
+
         for row in api_data:
             cursor.execute(
                 f"INSERT INTO {table_name} ({payload_column_name}, source, batch_id) VALUES (%s, %s, %s)",
@@ -37,4 +40,9 @@ def insert_data_to_bronze(api_data,table_name,payload_column_name,source_name):
         connection.close()
 
 if __name__ == "__main__":
-    insert_data_to_bronze(data_json,table_name,payload_column,source)
+    for table in table_config:
+        data_json = get_api_data(table["endpoint"])
+        if data_json:
+            insert_data_to_bronze(data_json, table["table_name"], table["payload_column"], source)
+        else:
+            print(f"Skipping {table['table_name']} due to no data retrieved from API.")
