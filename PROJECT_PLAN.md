@@ -259,44 +259,75 @@ pytest          # Testing
 
 ---
 
-### Phase 5: Testing, Monitoring & Documentation (Week 5 - 15 hours)
-**Goal**: Production-ready code with tests and docs
+### Phase 5: AI Query Layer & Frontend (Week 5 - 15 hours)
+**Goal**: Natural language interface to query the gold layer
 
 **Tasks**:
-1. Data quality tests
-   - Write pytest tests for transformations
-   - Implement schema validation
-   - Add data freshness checks
-   - Test null handling edge cases
-   
-2. Monitoring setup
-   - Row count anomaly detection
-   - Data freshness alerts (last ingestion > 25 hours)
-   - Failed pipeline notifications
-   
-3. Documentation
-   - Architecture diagram (draw.io or similar)
-   - README with setup instructions
-   - Each script has docstrings
-   - Document design decisions (why PostgreSQL? why not dbt?)
-   
-4. GitHub preparation
-   - Clean up code
-   - Remove hardcoded credentials
-   - Add .gitignore
-   - Write compelling README
+1. AI query engine
+   - Connect Claude API to PostgreSQL gold layer
+   - Send table schemas as context so the model can write SQL
+   - Execute generated SQL safely (read-only queries)
+   - Return results + natural language summary
+
+2. Frontend
+   - Simple web app (Flask or Streamlit)
+   - Text input for natural language questions
+   - Display query results as tables
+   - Basic visualizations (charts from query results)
+
+3. Example queries the AI should handle
+   - "What was the total revenue last month?"
+   - "Which product category sells the most?"
+   - "Show me the top 10 customers by spending"
+   - "Compare weekend vs weekday sales"
 
 **Deliverables**:
-- Test suite with >80% coverage
-- Monitoring alerts configured
-- Complete GitHub repository
-- Architecture diagram
+- Working AI-powered query interface
+- Frontend accessible via browser
+- At least 3 visualization types (bar, line, table)
 
 **Key Learning**:
-- How to test data pipelines?
-- What makes data "fresh"?
-- How to detect anomalies in data?
-- What makes good data engineering documentation?
+- How to use LLM APIs for text-to-SQL
+- Prompt engineering for structured output
+- Building a simple web interface
+- Connecting frontend to a data backend
+
+---
+
+### Phase 6: Deployment & Documentation (Week 6 - 15 hours)
+**Goal**: Deploy the full stack and polish for portfolio
+
+**Tasks**:
+1. Containerize everything
+   - Docker Compose for PostgreSQL + Airflow + Frontend
+   - Single `docker-compose up` to run the whole project
+
+2. Testing
+   - Write pytest tests for transformations
+   - Test idempotency end-to-end
+   - Test AI query layer with sample questions
+
+3. Documentation
+   - Architecture diagram (draw.io or similar)
+   - README with setup instructions and demo screenshots
+   - Document design decisions
+   - Add example business queries in playground.sql
+
+4. Deploy
+   - Choose hosting (Railway, Render, or cloud VM)
+   - Deploy database + frontend
+   - Set up CI/CD (optional)
+
+**Deliverables**:
+- Fully deployed and accessible application
+- Complete GitHub repository with compelling README
+- Architecture diagram
+- Demo-ready for portfolio/interviews
+
+**Key Learning**:
+- Docker Compose for multi-service apps
+- Deployment workflows
+- How to present a data engineering project
 
 ---
 

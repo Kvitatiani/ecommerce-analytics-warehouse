@@ -16,7 +16,9 @@ venv/
 .DS_Store
 Thumbs.db
 
-# md files
+# Personal files
 CLAUDE.md
 LEARNING_LOG_TEMPLATE.md
 PROGRESS.md
+QUICKSTART.md
+learning_logs.txt
