@@ -1,3 +1,9 @@
+"""Silver-to-gold transformation layer.
+
+Reads SQL files that populate the gold schema's star-schema tables
+(dimension and fact tables) from cleaned silver layer data.
+"""
+
 from src.utils.db_connection import get_db_connection
 
 sql_files = [
@@ -8,6 +14,15 @@ sql_files = [
 ]
 
 def insert_data_to_gold(files_list):
+    """Execute SQL files to populate the gold schema's star-schema tables.
+
+    Opens each SQL file in order, executes it against the database, and
+    commits the transaction once all files succeed.
+
+    Args:
+        files_list: List of file paths to SQL population scripts
+            (e.g. dimension and fact table inserts).
+    """
     try:
         connection = get_db_connection()
         cursor = connection.cursor()

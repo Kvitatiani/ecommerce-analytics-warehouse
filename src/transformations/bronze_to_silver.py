@@ -1,3 +1,10 @@
+"""Bronze-to-silver transformation layer.
+
+Reads SQL transformation files that extract, clean, and deduplicate
+raw JSON data from the bronze schema into typed, structured tables
+in the silver schema.
+"""
+
 from src.utils.db_connection import get_db_connection
 
 sql_files = [
@@ -7,6 +14,15 @@ sql_files = [
 ]
 
 def insert_data_to_silver(files_list):
+    """Execute SQL transformation files to populate the silver schema.
+
+    Opens each SQL file in order, executes it against the database, and
+    commits the transaction once all files succeed.
+
+    Args:
+        files_list: List of file paths to SQL transformation scripts
+            (e.g. bronze-to-silver UPSERT queries).
+    """
     try:
         connection = get_db_connection()
         cursor = connection.cursor()

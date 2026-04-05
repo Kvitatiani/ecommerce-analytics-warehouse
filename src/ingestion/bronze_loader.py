@@ -1,3 +1,10 @@
+"""Bronze layer loader for raw API data ingestion.
+
+Fetches data from the Platzi API and inserts it as raw JSON into
+the bronze schema tables. Each run truncates and reloads, logging
+success or failure to bronze.ingestion_log.
+"""
+
 from src.ingestion.api_client import get_api_data
 from src.utils.db_connection import get_db_connection
 from psycopg2.extras import Json
@@ -11,8 +18,20 @@ table_config = [
     {"table_name": "bronze.users_raw", "endpoint": "users", "payload_column": "users_payload"},
 ]
 
-def insert_data_to_bronze(api_data,table_name,payload_column_name,source_name):
-    try: 
+def insert_data_to_bronze(api_data, table_name, payload_column_name, source_name):
+    """Truncate and reload a bronze table with raw API data.
+
+    Each record is stored as a JSON payload alongside metadata (source,
+    batch_id). The operation is logged to bronze.ingestion_log with
+    either a 'success' or 'failure' status.
+
+    Args:
+        api_data: List of dicts representing the raw API response.
+        table_name: Fully qualified bronze table name (e.g. "bronze.products_raw").
+        payload_column_name: Name of the JSONB column to store the payload.
+        source_name: Identifier for the data source (e.g. "platzi_api").
+    """
+    try:
         batch_id = datetime.now().isoformat()
         connection = get_db_connection()
         cursor = connection.cursor()

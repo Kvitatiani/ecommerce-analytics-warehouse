@@ -1,9 +1,22 @@
+"""Synthetic order generator for the silver layer.
+
+Creates realistic fake order data by randomly combining products and
+customers from the silver schema over a configurable date range,
+then inserts the results into silver.orders.
+"""
+
 import random
 from datetime import timedelta, datetime, date
 from src.utils.db_connection import get_db_connection
 
 
 def generate_orders():
+    """Generate and insert synthetic order records into silver.orders.
+
+    Fetches products and customers from the silver layer, then creates
+    random orders spanning from 2025-10-01 to today. Each day gets
+    10-50 orders, each with 1-5 distinct line items and quantities of 1-3.
+    """
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
