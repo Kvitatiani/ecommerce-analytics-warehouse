@@ -15,3 +15,8 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# md files
+CLAUDE.md
+LEARNING_LOG_TEMPLATE.md
+PROGRESS.md
