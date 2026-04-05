@@ -27,3 +27,15 @@ CREATE TABLE IF NOT EXISTS silver.customers (
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
+
+
+CREATE TABLE IF NOT EXISTS silver.orders (
+    order_id INTEGER NOT NULL,
+    order_line_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    customer_id INTEGER REFERENCES silver.customers(customer_id),
+    product_id INTEGER REFERENCES silver.products(product_id),
+    quantity INTEGER NOT NULL,
+    unit_price NUMERIC(10,2) NOT NULL,
+    total_price NUMERIC(10,2) NOT NULL,
+    order_date DATE
+);
