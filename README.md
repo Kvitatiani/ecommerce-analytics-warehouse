@@ -2,7 +2,7 @@
 
 > End-to-end data warehouse with medallion architecture, orchestrated ETL, and an AI layer that lets users query data in plain English.
 
-Came across a medallion architecture post on Medium, got curious, and decided the best way to understand it was to build the whole thing from scratch. This is the result.
+Came across a medallion architecture post on Medium, got curious, and decided the best way to understand it was to build the whole thing from scratch. I have built dwh at much bigger scale at work, that was before medallion got hyped, but turns out what I've built before is very similar conceptually. 
 
 ## Architecture
 
@@ -33,7 +33,7 @@ graph LR
 | Component | Technology | Why |
 |---|---|---|
 | Warehouse | PostgreSQL 15 | Industry standard, runs in Docker, full SQL support |
-| Orchestration | Apache Airflow | DAG-based scheduling, learned task dependencies and idempotency |
+| Orchestration | Apache Airflow | DAG-based scheduling, task dependencies and idempotency |
 | AI Layer | Streamlit + Claude API | Fast to build, interactive, natural language to SQL |
 | Infrastructure | Docker Compose | Reproducible local environment, one command to start |
 | Tunnel | ngrok | Expose local app for demos without deploying to cloud |
@@ -141,9 +141,9 @@ ngrok http 8501
 ## Screenshots
 
 
-![Pipeline DAG](docs/screenshots/airflow_dag_success.png)
+<!-- ![Pipeline DAG](docs/screenshots/airflow_dag_success.png) -->
 ![AI Layer](docs/screenshots/ai_layer_visualization.png)
-![AI Layer SQL](docs/screenshots/ai_layer_sql.png)
+<!-- ![AI Layer SQL](docs/screenshots/ai_layer_sql.png) -->
 ![Inside bronze DAG](docs/screenshots/airflow_inside_bronze.png)
 ![Medallion pipeline](docs/screenshots/airflow_medallion_piepleine.png)
 ![API Source](docs/screenshots/platzi_fake_store_api.png)
