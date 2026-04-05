@@ -12,7 +12,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from dotenv import load_dotenv
-from src.utils.db_connection import get_db_connection
+from src.utils.db_connection import get_readonly_connection
 
 
 load_dotenv()
@@ -77,7 +77,7 @@ def run_query(sql):
     Returns:
         pandas.DataFrame: Query results.
     """
-    connection = get_db_connection()
+    connection = get_readonly_connection()
     try:
         df = pd.read_sql(sql, connection)
         return df
