@@ -141,9 +141,9 @@ ngrok http 8501
 ## Screenshots
 
 
-<!-- ![Pipeline DAG](docs/screenshots/airflow_dag_success.png) -->
+![Pipeline DAG](docs/screenshots/airflow_dag_success.png)
 ![AI Layer](docs/screenshots/ai_layer_visualization.png)
-<!-- ![AI Layer SQL](docs/screenshots/ai_layer_sql.png) -->
+![AI Layer SQL](docs/screenshots/ai_layer_sql.png)
 ![Inside bronze DAG](docs/screenshots/airflow_inside_bronze.png)
 ![Medallion pipeline](docs/screenshots/airflow_medallion_piepleine.png)
 ![API Source](docs/screenshots/platzi_fake_store_api.png)
