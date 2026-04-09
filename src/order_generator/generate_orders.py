@@ -8,6 +8,7 @@ then inserts the results into silver.orders.
 import random
 from datetime import timedelta, datetime, date
 from src.utils.db_connection import get_db_connection
+from psycopg2.extras import execute_values
 
 
 def generate_orders():
@@ -16,6 +17,7 @@ def generate_orders():
     Fetches products and customers from the silver layer, then creates
     random orders spanning from 2025-10-01 to today. Each day gets
     10-50 orders, each with 1-5 distinct line items and quantities of 1-3.
+    Uses batch insert for performance over remote connections.
     """
     try:
         connection = get_db_connection()
@@ -35,6 +37,7 @@ def generate_orders():
 
         # set order_id to 0, it will be incremented for each new order
         order_id = 0
+        rows = []
 
         # Generating orders for each day in the date range
         for day in range((date_range_end - date_range_start).days + 1):
@@ -47,12 +50,13 @@ def generate_orders():
                     product = random.choice(products)
                     product_quantity = random.randint(1, 3)
                     total_price = product[1] * product_quantity
-                    cursor.execute(
-                        "INSERT INTO silver.orders (order_id, customer_id, order_date, product_id, quantity, unit_price, total_price) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                        (order_id, customer[0], order_date, product[0], product_quantity, product[1], total_price)
-                    )
+                    rows.append((order_id, customer[0], order_date, product[0], product_quantity, product[1], total_price))
+
+        execute_values(cursor,
+            "INSERT INTO silver.orders (order_id, customer_id, order_date, product_id, quantity, unit_price, total_price) VALUES %s",
+            rows)
         connection.commit()
-        print("Orders generated and inserted into silver.orders successfully.")
+        print(f"Orders generated and inserted into silver.orders successfully. ({len(rows)} rows)")
     except Exception as e:
         connection.rollback()
         print(f"Error generating orders: {e}")
