@@ -17,7 +17,6 @@ venv/
 Thumbs.db
 
 # Personal files
-CLAUDE.md
 LEARNING_LOG_TEMPLATE.md
 PROGRESS.md
 QUICKSTART.md
