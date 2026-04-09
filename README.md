@@ -160,3 +160,7 @@ This was a deliberate architecture exercise — building out each layer to press
 - **SCD Type 2 on products** — price history preserved in the dimension, fact table joins are date-range aware
 - **Read-only AI layer** — defense in depth: dedicated DB user + connection-level read-only mode, so AI-generated SQL can't mutate data
 - **Orchestration with Airflow** — DAG enforces bronze >> silver >> gold dependency chain; failures don't cascade
+
+## Live Demo
+
+Try it out: [ecommerce-analytics-warehouse-production.up.railway.app](https://ecommerce-analytics-warehouse-production.up.railway.app/)
